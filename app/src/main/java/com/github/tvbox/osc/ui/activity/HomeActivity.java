@@ -641,10 +641,7 @@ public class HomeActivity extends BaseActivity {
         super.onPause();
         mHandler.removeCallbacksAndMessages(null);
     }
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void refresh(RefreshEvent event) {
         if (event.type == RefreshEvent.TYPE_PUSH_URL) {
