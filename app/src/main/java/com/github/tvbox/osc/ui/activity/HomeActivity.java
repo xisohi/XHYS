@@ -388,8 +388,6 @@ public class HomeActivity extends BaseActivity {
 
         if (dataInitOk && jarInitOk) {
             showLoading();
-            // 检查权限 后 检查更新
-            checkPermissions();
             sourceViewModel.getSort(ApiConfig.get().getHomeSourceBean().getKey());
             if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 LOG.e("有");
@@ -646,8 +644,6 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        // 检查权限 后 检查更新
-        checkPermissions();
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void refresh(RefreshEvent event) {
