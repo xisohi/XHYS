@@ -49,7 +49,6 @@ public class App extends MultiDexApplication {
         // takagen99 : Initialize Locale
         initLocale();
         // OKGo
-        OkGo.getInstance().init(instance);
         OkGoHelper.init();
         // Get EPG Info
         EpgUtil.init();
@@ -74,9 +73,12 @@ public class App extends MultiDexApplication {
         FileUtils.recursiveDelete(dir);*/
 
         FileUtils.cleanPlayerCache();
-        initUpdate();
+
         // Add JS support
         QuickJSLoader.init();
+
+        //初始化更新
+        initUpdate();
     }
 
     public static P2PClass getp2p() {
