@@ -49,6 +49,7 @@ public class App extends MultiDexApplication {
         // takagen99 : Initialize Locale
         initLocale();
         // OKGo
+        OkGo.getInstance().init(instance);
         OkGoHelper.init();
         // Get EPG Info
         EpgUtil.init();
@@ -118,52 +119,52 @@ public class App extends MultiDexApplication {
         putDefault(HawkConfig.PARSE_WEBVIEW, true);          //嗅探Webview: true=系统自带, false=XWalkView
         putDefault(HawkConfig.DOH_URL, 0);                   //安全DNS: 0=关闭, 1=腾讯, 2=阿里, 3=360, 4=Google, 5=AdGuard, 6=Quad9
     }
-        /**
-         * 初始化更新组件服务
-         */
-        private void initUpdate() {
-            XUpdate.get()
-                    .debug(false)
-                    //默认设置只在wifi下检查版本更新
-                    .isWifiOnly(false)
-                    //默认设置使用get请求检查版本
-                    .isGet(true)
-                    //默认设置非自动模式，可根据具体使用配置
-                    .isAutoMode(false)
+    /**
+     * 初始化更新组件服务
+     */
+    private void initUpdate() {
+        XUpdate.get()
+                .debug(false)
+                //默认设置只在wifi下检查版本更新
+                .isWifiOnly(false)
+                //默认设置使用get请求检查版本
+                .isGet(true)
+                //默认设置非自动模式，可根据具体使用配置
+                .isAutoMode(false)
 //                .setApkCacheDir("/storage/sdcard0/Android/data/ta.hai/files")
-                    .setApkCacheDir(getDiskCachePath(instance))
-                    //设置默认公共请求参数
-                    .param("VersionCode", UpdateUtils.getVersionCode(this))
-                    .param("VersionName", getPackageName())
-                    //设置版本更新出错的监听
-                    .setOnUpdateFailureListener(new OnUpdateFailureListener() {
-                        @Override
-                        public void onFailure(UpdateError error) {
-                            error.printStackTrace();
-                            // 对不同错误进行处理
+                .setApkCacheDir(getDiskCachePath(instance))
+                //设置默认公共请求参数
+                .param("VersionCode", UpdateUtils.getVersionCode(this))
+                .param("VersionName", getPackageName())
+                //设置版本更新出错的监听
+                .setOnUpdateFailureListener(new OnUpdateFailureListener() {
+                    @Override
+                    public void onFailure(UpdateError error) {
+                        error.printStackTrace();
+                        // 对不同错误进行处理
 //                        if (error.getCode() != CHECK_NO_NEW_VERSION) {
 ////                            ToastUtils.showShort(application,error.toString() + "");
 //                        }
-                            updateString(error);
-                        }
-                    })
-                    //设置是否支持静默安装，默认是true
-                    .supportSilentInstall(true)
-                    //这个必须设置！实现网络请求功能。
-                    .setIUpdateHttpService(new UpdateHttpService())
-                    //这个必须初始化
-                    .init(this);
+                        updateString(error);
+                    }
+                })
+                //设置是否支持静默安装，默认是true
+                .supportSilentInstall(true)
+                //这个必须设置！实现网络请求功能。
+                .setIUpdateHttpService(new UpdateHttpService())
+                //这个必须初始化
+                .init(this);
     }
-/**
- * 获取cache路径
- */
-        public static String getDiskCachePath(Context context) {
-            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) || !Environment.isExternalStorageRemovable()) {
-                return context.getExternalCacheDir().getPath();
-            } else {
-                return context.getCacheDir().getPath();
-            }
+    /**
+     * 获取cache路径
+     */
+    public static String getDiskCachePath(Context context) {
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) || !Environment.isExternalStorageRemovable()) {
+            return context.getExternalCacheDir().getPath();
+        } else {
+            return context.getCacheDir().getPath();
         }
+    }
 
     private void initLocale() {
         if (Hawk.get(HawkConfig.HOME_LOCALE, 0) == 0) {
