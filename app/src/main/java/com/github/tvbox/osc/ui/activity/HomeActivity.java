@@ -676,39 +676,7 @@ public class HomeActivity extends BaseActivity {
                 .updatePrompter(new CustomUpdatePrompter())// 自定义提示界面
                 .update();
     }
-    /**
-     * 检查权限 后 检查更新
-     */
-    public void checkPermissions() {
-        if (XXPermissions.isGranted(this, Permission.Group.STORAGE)) {
-            //Toast.makeText(this, "已获得存储权限", Toast.LENGTH_SHORT).show();
-            // 更新
-            update();
-        } else {
-            XXPermissions.with(this)
-                    .permission(Permission.Group.STORAGE)
-                    .request(new OnPermissionCallback() {
-                        @Override
-                        public void onGranted(List<String> permissions, boolean all) {
-                            if (all) {
-                                //Toast.makeText(mContext, "已获得存储权限", Toast.LENGTH_SHORT).show();
-                                // 更新
-                                update();
-                            }
-                        }
 
-                        @Override
-                        public void onDenied(List<String> permissions, boolean never) {
-                            if (never) {
-                                Toast.makeText(mContext, "获取存储权限失败,请在系统设置中开启", Toast.LENGTH_SHORT).show();
-                                XXPermissions.startPermissionActivity((Activity) mContext, permissions);
-                            } else {
-                                Toast.makeText(mContext, "获取存储权限失败", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-        }
-    }
     private void showFilterIcon(int count) {
         boolean activated = count > 0;
         currentView.findViewById(R.id.tvFilter).setVisibility(View.VISIBLE);
