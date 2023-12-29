@@ -25,18 +25,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.Activity;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.viewpager.widget.ViewPager;
-import com.github.tvbox.osc.ui.xupdate.Constants;
-import com.github.tvbox.osc.ui.xupdate.CustomUpdatePrompter;
-import com.xuexiang.xupdate.XUpdate;
-import com.hjq.permissions.OnPermissionCallback;
-import com.hjq.permissions.Permission;
-import com.hjq.permissions.XXPermissions;
+
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.api.ApiConfig;
 import com.github.tvbox.osc.base.BaseActivity;
@@ -657,17 +652,6 @@ public class HomeActivity extends BaseActivity {
 //                showFilterIcon((int) event.obj);
             }
         }
-    }
-    /**
-     * 检查更新
-     */
-    public void update() {
-        XUpdate.newBuild(this)
-                .updateUrl(Constants.UPDATE_DEFAULT_URL)
-                //.isAutoMode(true) // 自动下载，不会弹出窗口，下载完后会进入系统安装界面，类似强制安装，未完成安装打开应用可能会重复进入安装界面
-                //.supportBackgroundUpdate(false)// 后台下载按钮
-                .updatePrompter(new CustomUpdatePrompter())// 自定义提示界面
-                .update();
     }
 
     private void showFilterIcon(int count) {
