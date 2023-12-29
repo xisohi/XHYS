@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TVBox</string>
+    <string name="app_name">星辉影视</string>
     <string name="app_home">首页</string>
-    <string name="app_source"></string>
+    <string name="app_source">https://agit.ai/xisohi/TVBoxOSC/raw/branch/master/XHYSyuan.json</string>
 
     // Home Page //
     <string name="hm_ok">加载成功</string>
@@ -66,7 +66,7 @@
     <string name="mn_preview">窗口预览</string>
     <string name="mn_webview">嗅探Webview</string>
     <string name="mn_render">渲染方式</string>
-    <string name="mn_backup">数据备份还原</string>
+    <string name="mn_backup">备份还原</string>
     <string name="mn_dns">安全DNS</string>
     <string name="mn_locale">语言</string>
     <string name="mn_theme">主题</string>
@@ -177,5 +177,21 @@
     <string name="exo_track_role_closed_captions">字幕</string>
     <string name="exo_track_bitrate">%1$.2f Mbps</string>
     <string name="exo_item_list">%1$s，%2$s</string>
+    // About
+    <string name="version_title">版本 </string>
 
+    <string name="update_code_2000">查询更新失败</string>
+    <string name="update_code_2001">没有wifi</string>
+    <string name="update_code_2002">没有网络</string>
+    <string name="update_code_2003">正在进行版本更新</string>
+    <string name="update_code_2004">已是最新版本</string>
+    <string name="update_code_2005">版本检查返回空</string>
+    <string name="update_code_2006">版本检查返回json解析失败</string>
+    <string name="update_code_2007">被忽略的版本</string>
+    <string name="update_code_2008">应用下载的缓存目录为空</string>
+    <string name="update_code_3000">版本提示器异常错误</string>
+    <string name="update_code_3001">版本提示器所在Activity页面被销毁</string>
+    <string name="update_code_4000">新应用安装包下载失败</string>
+    <string name="update_code_5000">apk安装失败</string>
+    <string name="update_code_5100">未知错误</string>
 </resources>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TVBox</string>
+    <string name="app_name">星辉影视</string>
     <string name="app_home">Home</string>
-    <string name="app_source"></string>
+    <string name="app_source">https://agit.ai/xisohi/TVBoxOSC/raw/branch/master/XHYSyuan.json</string>
 
     // Home Page //
     <string name="hm_ok">Load Complete</string>
@@ -192,4 +192,21 @@
         <item>https://doh.360.cn/dns-query</item>
     </string-array>
 
+    // About
+    <string name="version_title">Version </string>
+
+    <string name="update_code_2000">Query update failed</string>
+    <string name="update_code_2001">No WiFi</string>
+    <string name="update_code_2002">No network</string>
+    <string name="update_code_2003">Version update in progress</string>
+    <string name="update_code_2004">It is already the latest version</string>
+    <string name="update_code_2005">Version check returned empty</string>
+    <string name="update_code_2006">Version check returned JSON parsing failure</string>
+    <string name="update_code_2007">Version that has been ignored</string>
+    <string name="update_code_2008">The cache directory for app download is empty</string>
+    <string name="update_code_3000">Version prompt exception error</string>
+    <string name="update_code_3001">The activity page where the version reminder is located has been destroyed</string>
+    <string name="update_code_4000">New application installation package download failed</string>
+    <string name="update_code_5000">APK installation failed</string>
+    <string name="update_code_5100">unknown error</string>
 </resources>

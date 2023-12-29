@@ -8,10 +8,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.xuexiang.xupdate.XUpdate;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
-
+import com.github.tvbox.osc.ui.xupdate.CustomUpdatePrompter;
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.api.ApiConfig;
 import com.github.tvbox.osc.base.BaseActivity;
@@ -41,7 +41,7 @@ import com.lzy.okgo.model.Response;
 import com.orhanobut.hawk.Hawk;
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.owen.tvrecyclerview.widget.V7GridLayoutManager;
-
+import com.github.tvbox.osc.ui.xupdate.Constants;
 import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
@@ -836,7 +836,9 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 tvHomeDefaultShow.setText(Hawk.get(HawkConfig.HOME_DEFAULT_SHOW, true) ? "开启" : "关闭");
             }
         });
-
+        findViewById(R.id.llUpdate).setOnClickListener(view -> {
+            update();
+        });
         SettingActivity.callback = new SettingActivity.DevModeCallback() {
             @Override
             public void onChange() {
@@ -851,7 +853,15 @@ public class ModelSettingFragment extends BaseLazyFragment {
         super.onDestroyView();
         SettingActivity.callback = null;
     }
-
+    /**
+     * 检查更新
+     */
+    public void update() {
+        XUpdate.newBuild(this.mContext)
+                .updateUrl(Constants.UPDATE_DEFAULT_URL)
+                .updatePrompter(new CustomUpdatePrompter())// 自定义提示界面
+                .update();
+    }
     String getHomeRecName(int type) {
         if (type == 1) {
             return "站点推荐";
