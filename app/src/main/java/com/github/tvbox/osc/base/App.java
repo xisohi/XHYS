@@ -79,7 +79,7 @@ public class App extends MultiDexApplication {
         QuickJSLoader.init();
 
         //初始化更新
- //       initUpdate();
+        initUpdate();
     }
 
     public static P2PClass getp2p() {
