@@ -49,7 +49,6 @@ public class App extends MultiDexApplication {
         // takagen99 : Initialize Locale
         initLocale();
         // OKGo
-        OkGo.getInstance().init(instance);
         OkGoHelper.init();
         // Get EPG Info
         EpgUtil.init();

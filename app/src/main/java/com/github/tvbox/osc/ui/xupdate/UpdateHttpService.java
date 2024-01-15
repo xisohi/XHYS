@@ -32,8 +32,8 @@ public class UpdateHttpService implements IUpdateHttpService {
     public void asyncGet(@NonNull String url, @NonNull Map<String, Object> params, final @NonNull Callback callBack) {
 //        Log.e("XUpdate", "asyncGet--- " + url);
 
-        OkGo.getInstance().<String>get(url)
-                .cacheMode(CacheMode.DEFAULT)
+        OkGo.<String>get(url)
+                .tag(url)                    // 请求的 tag, 主要用于取消对应的请求
                 .params(transform(params))
                 .execute(new StringCallback() {
                     @Override
@@ -54,8 +54,8 @@ public class UpdateHttpService implements IUpdateHttpService {
     @Override
     public void asyncPost(@NonNull String url, @NonNull Map<String, Object> params, final @NonNull Callback callBack) {
         //Log.e("XUpdate", "asyncPost--- " + url);
-        OkGo.getInstance().<String>post(url)
-                .cacheMode(CacheMode.DEFAULT)
+        OkGo.<String>post(url)
+                .tag(url)                    // 请求的 tag, 主要用于取消对应的请求
                 .params(transform(params))
                 .execute(new StringCallback() {
                     @Override
@@ -79,9 +79,8 @@ public class UpdateHttpService implements IUpdateHttpService {
 //        Log.e("XUpdate", "download--- " + url);
 //        Log.e("XUpdate", "download--- " + path);
 //        Log.e("XUpdate", "download--- " + fileName);
-        OkGo.getInstance().<File>get(url)
+        OkGo.<File>get(url)
                 .tag(url)                    // 请求的 tag, 主要用于取消对应的请求
-                .cacheMode(CacheMode.DEFAULT)
                 .execute(new FileCallback(path, fileName) {
                     @Override
                     public void downloadProgress(Progress progress) {
