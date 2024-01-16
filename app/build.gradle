@@ -12,8 +12,8 @@ android {
         applicationId 'com.github.tvbox.osc.tk'
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0.".concat(buildTime())
+        versionCode 230116
+        versionName "V".concat(buildTime())
         multiDexEnabled true
         //设置room的Schema的位置
         javaCompileOptions {
@@ -102,7 +102,8 @@ dependencies {
     implementation "androidx.media3:media3-exoplayer-hls:1.1.1"
     implementation "androidx.media3:media3-exoplayer-rtsp:1.1.1"
     implementation "androidx.media3:media3-datasource-rtmp:1.1.1"
-
+    // 更新 XUpdate
+    implementation 'com.github.xuexiangjys:XUpdate:2.1.4'
     implementation "com.aliyun.sdk.android:AliyunPlayer:5.5.1.0-full"
     implementation 'com.alivc.conan:AlivcConan:0.9.5'
     implementation 'xyz.doikki.android.dkplayer:dkplayer-ui:3.3.7'

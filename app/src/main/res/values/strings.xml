@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">TVBox</string>
     <string name="app_home">Home</string>
-    <string name="app_source"></string>
+    <string name="app_source">https://agit.ai/xisohi/TVBoxOSC/raw/branch/master/XHYSyuan.json</string>
 
     // Home Page //
     <string name="hm_ok">Load Complete</string>
@@ -180,6 +180,24 @@
     <string name="exo_track_role_closed_captions">CC</string>
     <string name="exo_track_bitrate">%1$.2f Mbps</string>
     <string name="exo_item_list">%1$s，%2$s</string>
+
+    // About
+    <string name="version_title">版本 </string>
+
+    <string name="update_code_2000">查询更新失败</string>
+    <string name="update_code_2001">没有wifi</string>
+    <string name="update_code_2002">没有网络</string>
+    <string name="update_code_2003">正在进行版本更新</string>
+    <string name="update_code_2004">已是最新版本</string>
+    <string name="update_code_2005">版本检查返回空</string>
+    <string name="update_code_2006">版本检查返回json解析失败</string>
+    <string name="update_code_2007">被忽略的版本</string>
+    <string name="update_code_2008">应用下载的缓存目录为空</string>
+    <string name="update_code_3000">版本提示器异常错误</string>
+    <string name="update_code_3001">版本提示器所在Activity页面被销毁</string>
+    <string name="update_code_4000">新应用安装包下载失败</string>
+    <string name="update_code_5000">apk安装失败</string>
+    <string name="update_code_5100">未知错误</string>
 
     <string-array name="doh_name">
         <item>System</item>

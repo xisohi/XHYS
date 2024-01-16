@@ -8,10 +8,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.github.tvbox.osc.ui.xupdate.Constants;
+import com.github.tvbox.osc.ui.xupdate.CustomUpdatePrompter;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
-
+import com.xuexiang.xupdate.XUpdate;
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.api.ApiConfig;
 import com.github.tvbox.osc.base.BaseActivity;
@@ -838,7 +839,9 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 tvHomeDefaultShow.setText(Hawk.get(HawkConfig.HOME_DEFAULT_SHOW, true) ? "开启" : "关闭");
             }
         });
-
+        findViewById(R.id.llUpdate).setOnClickListener(view -> {
+            update();
+        });
         SettingActivity.callback = new SettingActivity.DevModeCallback() {
             @Override
             public void onChange() {
@@ -852,6 +855,15 @@ public class ModelSettingFragment extends BaseLazyFragment {
     public void onDestroyView() {
         super.onDestroyView();
         SettingActivity.callback = null;
+    }
+    /**
+     * 检查更新
+     */
+    public void update() {
+        XUpdate.newBuild(this.mContext)
+                .updateUrl(Constants.UPDATE_DEFAULT_URL)
+                .updatePrompter(new CustomUpdatePrompter())// 自定义提示界面
+                .update();
     }
 
     String getHomeRecName(int type) {
