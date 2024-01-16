@@ -21,6 +21,11 @@ android {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
+
+        ndk {
+            // 指定要 ndk 需要兼容的架构(这样其他依赖包里 mips,x86,arm-v8 之类未指定的的 so 会被过滤掉)
+            abiFilters "arm64-v8a", "armeabi-v7a", "armeabi"
+        }
     }
 
     packagingOptions {
