@@ -64,7 +64,7 @@ public class CustomUpdatePrompter implements IUpdatePrompter {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // 忽略当前版本跟新
-                    UpdateUtils.saveIgnoreVersion(updateProxy.getContext(), updateEntity.getVersionName());
+                    //UpdateUtils.saveIgnoreVersion(updateProxy.getContext(), updateEntity.getVersionName());
                 }
             }).setCancelable(true);
         } else  {

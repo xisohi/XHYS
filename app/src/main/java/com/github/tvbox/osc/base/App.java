@@ -20,7 +20,16 @@ import com.whl.quickjs.android.QuickJSLoader;
 import java.io.File;
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.unit.Subunits;
-
+import com.github.tvbox.osc.ui.xupdate.UpdateHttpService;
+import com.xuexiang.xupdate.XUpdate;
+import com.xuexiang.xupdate.entity.UpdateError;
+import com.xuexiang.xupdate.listener.OnUpdateFailureListener;
+import com.xuexiang.xupdate.utils.UpdateUtils;
+import com.lzy.okgo.OkGo;
+import android.content.Context;
+import android.os.Environment;
+import android.widget.Toast;
+import com.github.tvbox.osc.R;
 /**
  * @author pj567
  * @date :2020/12/17
@@ -67,6 +76,9 @@ public class App extends MultiDexApplication {
 
         // Add JS support
         QuickJSLoader.init();
+
+        //初始化更新
+        initUpdate();
     }
 
     public static P2PClass getp2p() {
@@ -137,5 +149,113 @@ public class App extends MultiDexApplication {
     }
     public String getDashData() {
         return dashData;
+    }
+
+    /**
+     * 初始化更新组件服务
+     */
+    private void initUpdate() {
+        XUpdate.get()
+                .debug(true)
+                //默认设置只在wifi下检查版本更新
+                .isWifiOnly(false)
+                //默认设置使用get请求检查版本
+                .isGet(true)
+                //默认设置非自动模式，可根据具体使用配置
+                .isAutoMode(false)
+//                .setApkCacheDir("/storage/sdcard0/Android/data/ta.hai/files")
+                .setApkCacheDir(getDiskCachePath(instance))
+                //设置默认公共请求参数
+                .param("VersionCode", UpdateUtils.getVersionCode(this))
+                .param("VersionName", getPackageName())
+                //设置版本更新出错的监听
+                .setOnUpdateFailureListener(new OnUpdateFailureListener() {
+                    @Override
+                    public void onFailure(UpdateError error) {
+                        error.printStackTrace();
+                        // 对不同错误进行处理
+//                        if (error.getCode() != CHECK_NO_NEW_VERSION) {
+////                            ToastUtils.showShort(application,error.toString() + "");
+//                        }
+                        updateString(error);
+                    }
+                })
+                //设置是否支持静默安装，默认是true
+                .supportSilentInstall(true)
+                //这个必须设置！实现网络请求功能。
+                .setIUpdateHttpService(new UpdateHttpService())
+                //这个必须初始化
+                .init(this);
+    }
+    /**
+     * 获取cache路径
+     */
+    private static String getDiskCachePath(Context context) {
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) || !Environment.isExternalStorageRemovable()) {
+            return context.getExternalCacheDir().getPath();
+        } else {
+            return context.getCacheDir().getPath();
+        }
+    }
+
+    private void updateString(UpdateError error) {
+        switch (error.getCode()) {
+            case 2000:
+                // ToastUtils.showShort("查询更新失败");
+                Toast.makeText(this, getString(R.string.update_code_2000), Toast.LENGTH_SHORT).show();
+                break;
+            case 2001:
+                // ToastUtils.showShort( "没有wifi");
+                Toast.makeText(this, getString(R.string.update_code_2001), Toast.LENGTH_SHORT).show();
+                break;
+            case 2002:
+                // ToastUtils.showShort("没有网络");
+                Toast.makeText(this, getString(R.string.update_code_2001), Toast.LENGTH_SHORT).show();
+                break;
+            case 2003:
+                // ToastUtils.showShort( "正在进行版本更新");
+                Toast.makeText(this, getString(R.string.update_code_2003), Toast.LENGTH_SHORT).show();
+                break;
+            case 2004:
+                // ToastUtils.showShort( "无最新版本");
+                Toast.makeText(this, getString(R.string.update_code_2004), Toast.LENGTH_SHORT).show();
+                break;
+            case 2005:
+                // ToastUtils.showShort( "版本检查返回空");
+                Toast.makeText(this, getString(R.string.update_code_2005), Toast.LENGTH_SHORT).show();
+                break;
+            case 2006:
+                // ToastUtils.showShort( "版本检查返回json解析失败");
+                Toast.makeText(this, getString(R.string.update_code_2006), Toast.LENGTH_SHORT).show();
+                break;
+            case 2007:
+                // ToastUtils.showShort( "已经被忽略的版本");
+                Toast.makeText(this, getString(R.string.update_code_2007), Toast.LENGTH_SHORT).show();
+                break;
+            case 2008:
+                // ToastUtils.showShort( "应用下载的缓存目录为空");
+                Toast.makeText(this, getString(R.string.update_code_2008), Toast.LENGTH_SHORT).show();
+                break;
+            case 3000:
+                // ToastUtils.showShort( "版本提示器异常错误");
+                Toast.makeText(this, getString(R.string.update_code_3000), Toast.LENGTH_SHORT).show();
+                break;
+            case 3001:
+                // ToastUtils.showShort( "版本提示器所在Activity页面被销毁");
+                Toast.makeText(this, getString(R.string.update_code_3001), Toast.LENGTH_SHORT).show();
+                break;
+            case 4000:
+                // ToastUtils.showShort( "新应用安装包下载失败");
+                Toast.makeText(this, getString(R.string.update_code_4000), Toast.LENGTH_SHORT).show();
+                break;
+            case 5000:
+                // ToastUtils.showShort( "apk安装失败");
+                Toast.makeText(this, getString(R.string.update_code_5000), Toast.LENGTH_SHORT).show();
+                break;
+            case 5100:
+                // ToastUtils.showShort( "未知错误");
+                Toast.makeText(this, getString(R.string.update_code_5100), Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 }
