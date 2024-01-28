@@ -415,7 +415,7 @@ public class PlayFragment extends BaseLazyFragment {
         }
         SelectDialog<TrackInfoBean> dialog = new SelectDialog<>(getActivity());
         dialog.setTip(getString(R.string.vod_sub_sel));
-        dialog.setAdapter(new SelectDialogAdapter.SelectDialogInterface<TrackInfoBean>() {
+        dialog.setAdapter(null, new SelectDialogAdapter.SelectDialogInterface<TrackInfoBean>() {
             @Override
             public void click(TrackInfoBean value, int pos) {
                 mController.mSubtitleView.setVisibility(View.VISIBLE);
@@ -497,7 +497,7 @@ public class PlayFragment extends BaseLazyFragment {
         if (bean.size() < 1) return;
         SelectDialog<TrackInfoBean> dialog = new SelectDialog<>(getActivity());
         dialog.setTip(getString(R.string.vod_audio));
-        dialog.setAdapter(new SelectDialogAdapter.SelectDialogInterface<TrackInfoBean>() {
+        dialog.setAdapter(null, new SelectDialogAdapter.SelectDialogInterface<TrackInfoBean>() {
             @Override
             public void click(TrackInfoBean value, int pos) {
                 try {
@@ -551,6 +551,7 @@ public class PlayFragment extends BaseLazyFragment {
         Intent i = new Intent();
         i.addCategory(Intent.CATEGORY_DEFAULT);
         i.setAction(android.content.Intent.ACTION_VIEW);
+        if (videoURL == null) return;
         i.setDataAndType(Uri.parse(videoURL), "video/*");
         startActivity(Intent.createChooser(i, "Open Video with ..."));
     }
@@ -590,24 +591,28 @@ public class PlayFragment extends BaseLazyFragment {
         }
     }
 
-    private void yxdm(String url, Map<String, String> headers) {
+    private boolean yxdm(String url, Map<String, String> headers) {
         if (url.startsWith("https://www.ziyuantt.com/") && url.endsWith(".mp4")) {
             int st = url.indexOf("&url=");
             if (st > 1) {
                 String [] urls = url.substring(st + 5).split("\\|");
-                if (urls.length < 2) return;
+                if (urls.length < 2) return false;
                 stopLoadWebView(false);
                 videoSegmentationURL.clear();
                 videoSegmentationURL.addAll(Arrays.asList(urls));
                 HashMap<String, String> hm = new HashMap<>();
                 if (headers != null && headers.keySet().size() > 0) {
                     for (String k : headers.keySet()) {
-                            hm.put(k, " " + headers.get(k));
+                        hm.put(k, " " + headers.get(k));
                     }
                 }
+                loadFoundVideoUrls.add(urls[0]);
+                loadFoundVideoUrlsHeader.put(videoSegmentationURL.get(0), hm);
                 startPlayUrl(videoSegmentationURL.get(0), hm);
+                return true;
             }
         }
+        return false;
     }
 
     private String removeMinorityUrl(String tsUrlPre, String m3u8content) {
@@ -1161,10 +1166,14 @@ public class PlayFragment extends BaseLazyFragment {
         if (mVodInfo == null || mVodInfo.seriesMap.get(mVodInfo.playFlag) == null) {
             hasNext = false;
         } else {
-            hasNext = mVodInfo.playIndex + 1 < mVodInfo.seriesMap.get(mVodInfo.playFlag).size();
+            hasNext = mVodInfo.getplayIndex() + 1 < mVodInfo.seriesMap.get(mVodInfo.playFlag).size();
         }
         if (!hasNext) {
-            Toast.makeText(requireContext(), "已经是最后一集了", Toast.LENGTH_SHORT).show();
+            if(mVodInfo.reverseSort){
+                Toast.makeText(requireContext(), "已经是第一集了", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(requireContext(), "已经是最后一集了", Toast.LENGTH_SHORT).show();
+            }
             // takagen99: To auto go back to Detail Page after last episode
             if (inProgress && ((DetailActivity) mActivity).fullWindows) {
                 ((DetailActivity) mActivity).toggleFullPreview();
@@ -1173,6 +1182,8 @@ public class PlayFragment extends BaseLazyFragment {
             return;
         }
         mVodInfo.playIndex++;
+        mVodInfo.playGroup += mVodInfo.playIndex / mVodInfo.playGroupCount;
+        mVodInfo.playIndex = mVodInfo.playIndex %  mVodInfo.playGroupCount;
         play(false);
     }
 
@@ -1181,13 +1192,22 @@ public class PlayFragment extends BaseLazyFragment {
         if (mVodInfo == null || mVodInfo.seriesMap.get(mVodInfo.playFlag) == null) {
             hasPre = false;
         } else {
-            hasPre = mVodInfo.playIndex - 1 >= 0;
+            hasPre = mVodInfo.getplayIndex() - 1 >= 0;
         }
         if (!hasPre) {
-            Toast.makeText(requireContext(), "已经是第一集了", Toast.LENGTH_SHORT).show();
+            if(mVodInfo.reverseSort){
+                Toast.makeText(requireContext(), "已经是最后一集了", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(requireContext(), "已经是第一集了", Toast.LENGTH_SHORT).show();
+            }
             return;
         }
-        mVodInfo.playIndex--;
+        if(mVodInfo.playIndex == 0){
+            mVodInfo.playGroup--;
+            mVodInfo.playIndex = mVodInfo.playGroupCount - 1;
+        }else{
+            mVodInfo.playIndex--;
+        }
         play(false);
     }
 
@@ -1198,7 +1218,7 @@ public class PlayFragment extends BaseLazyFragment {
             autoRetryFromLoadFoundVideoUrls();
             return true;
         }
-        if (autoRetryCount < 2) {
+        if (autoRetryCount < 1) {
             autoRetryCount++;
             play(false);
             return true;
@@ -1222,8 +1242,8 @@ public class PlayFragment extends BaseLazyFragment {
 
     public void play(boolean reset) {
     	if (mVodInfo == null) return;
-        VodInfo.VodSeries vs = mVodInfo.seriesMap.get(mVodInfo.playFlag).get(mVodInfo.playIndex);
-        EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_REFRESH, mVodInfo.playIndex));
+        VodInfo.VodSeries vs = mVodInfo.seriesMap.get(mVodInfo.playFlag).get(mVodInfo.getplayIndex());
+        EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_REFRESH, mVodInfo.getplayIndex()));
         EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_REFRESH_NOTIFY, mVodInfo.name + "&&" + vs.name));
         String playTitleInfo = mVodInfo.name + " : " + vs.name;
         setTip("正在获取播放信息", true, false);
@@ -1232,8 +1252,8 @@ public class PlayFragment extends BaseLazyFragment {
         stopParse();
         initParseLoadFound();
         if (mVideoView != null) mVideoView.release();
-        subtitleCacheKey = mVodInfo.sourceKey + "-" + mVodInfo.id + "-" + mVodInfo.playFlag + "-" + mVodInfo.playIndex + "-" + vs.name + "-subt";
-        progressKey = mVodInfo.sourceKey + mVodInfo.id + mVodInfo.playFlag + mVodInfo.playIndex;
+        subtitleCacheKey = mVodInfo.sourceKey + "-" + mVodInfo.id + "-" + mVodInfo.playFlag + "-" + mVodInfo.getplayIndex() + "-" + vs.name + "-subt";
+        progressKey = mVodInfo.sourceKey + mVodInfo.id + mVodInfo.playFlag + mVodInfo.getplayIndex();
         //重新播放清除现有进度
         if (reset) {
             CacheManager.delete(MD5.string2MD5(progressKey), 0);
@@ -1883,6 +1903,7 @@ public class PlayFragment extends BaseLazyFragment {
             }
 
             if (!ad) {
+                if (yxdm(url, headers)) return null;
                 if (checkVideoFormat(url)) {
                     loadFoundVideoUrls.add(url);
                     loadFoundVideoUrlsHeader.put(url, headers);

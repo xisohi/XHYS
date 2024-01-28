@@ -39,6 +39,7 @@ public class HawkConfig {
     public static final String PLAY_TIME_STEP = "play_time_step";
     public static final String PIC_IN_PIC = "pic_in_pic";   // true = on, false = off
     public static final String VIDEO_PURIFY = "video_purify";
+    public static final String IJK_CACHE_PLAY = "ijk_cache_play";
 
     // Other Settings
     public static final String DOH_URL = "doh_url";         // DNS
@@ -53,6 +54,7 @@ public class HawkConfig {
     public static final String BACKGROUND_PLAY_TYPE = "background_play_type";
     public static final String FAST_SEARCH_MODE = "fast_search_mode";
     public static final String SCREEN_DISPLAY = "screen_display";
+    public static final String SEARCH_FILTER_KEY = "search_filter_key";
 
     // Live Settings
     public static final String LIVE_CHANNEL = "last_live_channel_name";
