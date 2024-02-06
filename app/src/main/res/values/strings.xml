@@ -186,22 +186,22 @@
     <string name="exo_item_list">%1$s，%2$s</string>
 
     // About
-    <string name="version_title">版本 </string>
+    <string name="version_title">version</string>
 
-    <string name="update_code_2000">查询更新失败</string>
-    <string name="update_code_2001">没有wifi</string>
-    <string name="update_code_2002">没有网络</string>
-    <string name="update_code_2003">正在进行版本更新</string>
-    <string name="update_code_2004">已是最新版本</string>
-    <string name="update_code_2005">版本检查返回空</string>
-    <string name="update_code_2006">版本检查返回json解析失败</string>
-    <string name="update_code_2007">被忽略的版本</string>
-    <string name="update_code_2008">应用下载的缓存目录为空</string>
-    <string name="update_code_3000">版本提示器异常错误</string>
-    <string name="update_code_3001">版本提示器所在Activity页面被销毁</string>
-    <string name="update_code_4000">新应用安装包下载失败</string>
-    <string name="update_code_5000">apk安装失败</string>
-    <string name="update_code_5100">未知错误</string>
+    <string name="update_code_2000">Query update failed</string>
+    <string name="update_code_2001">No wireless network connection</string>
+    <string name="update_code_2002">No network connection</string>
+    <string name="update_code_2003">Version update in progress</string>
+    <string name="update_code_2004">It is already the latest version</string>
+    <string name="update_code_2005">Version check returned empty</string>
+    <string name="update_code_2006">Version check returned JSON parsing failure</string>
+    <string name="update_code_2007">Ignored version</string>
+    <string name="update_code_2008">The cache directory for app download is empty</string>
+    <string name="update_code_3000">Version prompt abnormal error</string>
+    <string name="update_code_3001">The activity page where the version prompt is located has been destroyed</string>
+    <string name="update_code_4000">New application installation package download failed</string>
+    <string name="update_code_5000">APK installation failed</string>
+    <string name="update_code_5100">unknown error</string>
 
     <string-array name="doh_name">
         <item>System</item>

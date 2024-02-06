@@ -192,7 +192,7 @@
     <string name="update_code_2001">没有wifi</string>
     <string name="update_code_2002">没有网络</string>
     <string name="update_code_2003">正在进行版本更新</string>
-    <string name="update_code_2004"></string>
+    <string name="update_code_2004">已是最新版本</string>
     <string name="update_code_2005">版本检查返回空</string>
     <string name="update_code_2006">版本检查返回json解析失败</string>
     <string name="update_code_2007">被忽略的版本</string>
