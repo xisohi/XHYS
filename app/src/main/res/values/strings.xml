@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">TVBox</string>
     <string name="app_home">Home</string>
-    <string name="app_source">https://agit.ai/xisohi/TVBoxOSC/raw/branch/master/XHYSyuan.json</string>
+    <string name="app_source">https://agit.ai/xisohi/TVBoxOSC/raw/branch/master/json/XHYSyuan.json</string>
 
     // Home Page //
     <string name="hm_ok">Load Complete</string>
