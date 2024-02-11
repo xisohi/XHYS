@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 def static buildTime() {
-    return new Date().format("yyyyMMdd_HHmm", TimeZone.getTimeZone("GMT+08:00"))
+    return new Date().format("yyMMdd", TimeZone.getTimeZone("GMT+08:00"))
 }
 
 android {
@@ -13,7 +13,7 @@ android {
         applicationId 'com.github.tvbox.osc.tk'
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 240210
+        versionCode 240211
         versionName ":".concat(buildTime())
         multiDexEnabled true
         //设置room的Schema的位置
