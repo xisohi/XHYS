@@ -188,6 +188,7 @@
     // About
     <string name="version_title">版本 </string>
 
+    // Update
     <string name="update_code_2000">查询更新失败</string>
     <string name="update_code_2001">没有wifi</string>
     <string name="update_code_2002">没有网络</string>
