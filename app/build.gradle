@@ -13,7 +13,7 @@ android {
         applicationId 'com.github.tvbox.osc.tk'
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 240303
+        versionCode 240313
         versionName ":".concat(buildTime())
         multiDexEnabled true
         //设置room的Schema的位置
@@ -21,11 +21,6 @@ android {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
-        }
-
-        ndk {
-            // 指定要 ndk 需要兼容的架构(这样其他依赖包里 mips,x86,arm-v8 之类未指定的的 so 会被过滤掉)
-            abiFilters "arm64-v8a", "armeabi-v7a", "armeabi"
         }
     }
 
