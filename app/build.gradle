@@ -13,7 +13,7 @@ android {
         applicationId 'com.github.tvbox.osc.tk'
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 240314
+        versionCode 240324
         versionName ":".concat(buildTime())
         multiDexEnabled true
         //设置room的Schema的位置
@@ -84,7 +84,7 @@ dependencies {
     implementation files('libs\\thunder.jar')
     implementation project(path: ':quickjs')
     // 更新 XUpdate
-    implementation 'com.github.xuexiangjys:XUpdate:2.1.4'
+    implementation 'com.github.xuexiangjys:XUpdate:2.1.5'
     kapt 'androidx.room:room-compiler:2.5.1'
     implementation 'com.github.alidili:FlowLayout:v1.5'
     implementation 'androidx.room:room-runtime:2.5.1'
