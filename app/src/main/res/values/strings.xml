@@ -189,9 +189,6 @@
     <string name="sub_style">Style</string>
     <string name="sub_style_text">ABC.</string>
 
-    // About
-    <string name="version_title">version</string>
-
     // Update
     <string name="update_code_2000">Query update failed</string>
     <string name="update_code_2001">No wireless network connection</string>
