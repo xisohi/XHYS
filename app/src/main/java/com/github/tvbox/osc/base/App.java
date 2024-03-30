@@ -241,7 +241,7 @@ public class App extends MultiDexApplication {
                 break;
             case 2002:
                 // ToastUtils.showShort("没有网络");
-                Toast.makeText(this, getString(R.string.update_code_2001), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.update_code_2002), Toast.LENGTH_SHORT).show();
                 break;
             case 2003:
                 // ToastUtils.showShort( "正在进行版本更新");
