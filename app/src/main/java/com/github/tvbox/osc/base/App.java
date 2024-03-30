@@ -191,7 +191,6 @@ public class App extends MultiDexApplication {
                 .isWifiOnly(false) //默认设置只在wifi下检查版本更新
                 .isGet(true)  //默认设置使用get请求检查版本
                 .isAutoMode(false) //默认设置非自动模式，可根据具体使用配置
-                .setApkCacheDir(getDiskCachePath(this)) // 假设您在 Activity 中调用这个方法，使用 this 作为 Context
                 .param("VersionCode", UpdateUtils.getVersionCode(this))
                 .param("VersionName", getPackageName())
                 .setOnUpdateFailureListener(new OnUpdateFailureListener() {
@@ -205,17 +204,6 @@ public class App extends MultiDexApplication {
                 .setIUpdateHttpService(new UpdateHttpService()) // 实现网络请求功能。
                 .init(this); // 这个必须初始化
     }
-    /**
-     * 获取cache路径
-     */
-    private static String getDiskCachePath(Context context) {
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) || !Environment.isExternalStorageRemovable()) {
-            return context.getExternalCacheDir().getPath();
-        } else {
-            return context.getCacheDir().getPath();
-        }
-    }
-
     private void updateString(UpdateError error) {
         switch (error.getCode()) {
             case 2000:
