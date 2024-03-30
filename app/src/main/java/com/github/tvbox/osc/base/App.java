@@ -274,9 +274,6 @@ public class App extends MultiDexApplication {
                 // ToastUtils.showShort( "未知错误");
                 Toast.makeText(this, getString(R.string.update_code_5100), Toast.LENGTH_SHORT).show();
                 break;
-            default:
-                Toast.makeText(this, "未知错误", Toast.LENGTH_SHORT).show();
-                break;
         }
     }
 }
