@@ -188,35 +188,22 @@ public class App extends MultiDexApplication {
     private void initUpdate() {
         XUpdate.get()
                 .debug(true)
-                //默认设置只在wifi下检查版本更新
-                .isWifiOnly(false)
-                //默认设置使用get请求检查版本
-                .isGet(true)
-                //默认设置非自动模式，可根据具体使用配置
-                .isAutoMode(false)
-//                .setApkCacheDir("/storage/sdcard0/Android/data/ta.hai/files")
-                .setApkCacheDir(getDiskCachePath(instance))
-                //设置默认公共请求参数
+                .isWifiOnly(false) //默认设置只在wifi下检查版本更新
+                .isGet(true)  //默认设置使用get请求检查版本
+                .isAutoMode(false) //默认设置非自动模式，可根据具体使用配置
+                .setApkCacheDir(getDiskCachePath(this)) // 假设您在 Activity 中调用这个方法，使用 this 作为 Context
                 .param("VersionCode", UpdateUtils.getVersionCode(this))
                 .param("VersionName", getPackageName())
-                //设置版本更新出错的监听
                 .setOnUpdateFailureListener(new OnUpdateFailureListener() {
                     @Override
                     public void onFailure(UpdateError error) {
                         error.printStackTrace();
-                        // 对不同错误进行处理
-//                        if (error.getCode() != CHECK_NO_NEW_VERSION) {
-////                            ToastUtils.showShort(application,error.toString() + "");
-//                        }
                         updateString(error);
-                    }
+                    } //设置版本更新出错的监听
                 })
-                //设置是否支持静默安装，默认是true
-                .supportSilentInstall(true)
-                //这个必须设置！实现网络请求功能。
-                .setIUpdateHttpService(new UpdateHttpService())
-                //这个必须初始化
-                .init(this);
+                .supportSilentInstall(true) //设置是否支持静默安装，默认是true
+                .setIUpdateHttpService(new UpdateHttpService()) // 实现网络请求功能。
+                .init(this); // 这个必须初始化
     }
     /**
      * 获取cache路径
@@ -286,6 +273,9 @@ public class App extends MultiDexApplication {
             case 5100:
                 // ToastUtils.showShort( "未知错误");
                 Toast.makeText(this, getString(R.string.update_code_5100), Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Toast.makeText(this, "未知错误", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
