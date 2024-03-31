@@ -201,7 +201,7 @@ public class App extends MultiDexApplication {
                         updateString(error);
                     } //设置版本更新出错的监听
                 })
-                .supportSilentInstall(true) //设置是否支持静默安装，默认是true
+                .supportSilentInstall(false) //设置是否支持静默安装，默认是true
                 .setIUpdateHttpService(new UpdateHttpService()) // 实现网络请求功能。
                 .init(this); // 这个必须初始化
     }
