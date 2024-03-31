@@ -312,7 +312,8 @@ public class ApiConfig {
         wallpaper = DefaultConfig.safeJsonString(infoJson, "wallpaper", "");
         // 远端站点源
         SourceBean firstSite = null;
-        for (JsonElement opt : infoJson.get("sites").getAsJsonArray()) {
+        JsonArray sites = infoJson.has("video") ? infoJson.getAsJsonObject("video").getAsJsonArray("sites") : infoJson.get("sites").getAsJsonArray();
+        for (JsonElement opt : sites) {
             JsonObject obj = (JsonObject) opt;
             SourceBean sb = new SourceBean();
             String siteKey = obj.get("key").getAsString().trim();
@@ -447,6 +448,7 @@ public class ApiConfig {
                         loadLives(infoJson.get("lives").getAsJsonArray());
                     } else {
                         JsonObject fengMiLives = infoJson.get("lives").getAsJsonArray().get(0).getAsJsonObject();
+                        Hawk.put(HawkConfig.LIVE_PLAYER_TYPE, DefaultConfig.safeJsonInt(fengMiLives, "playerType", -1));
                         String type = fengMiLives.get("type").getAsString();
                         if (type.equals("0")) {
                             String url = fengMiLives.get("url").getAsString();
