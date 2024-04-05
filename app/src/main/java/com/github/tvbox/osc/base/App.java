@@ -39,9 +39,7 @@ import com.xuexiang.xupdate.listener.OnUpdateFailureListener;
 import com.xuexiang.xupdate.utils.UpdateUtils;
 import com.lzy.okgo.OkGo;
 import android.content.Context;
-import android.os.Environment;
 import android.widget.Toast;
-import com.github.tvbox.osc.R;
 /**
  * @author pj567
  * @date :2020/12/17
@@ -236,7 +234,7 @@ public class App extends MultiDexApplication {
                 break;
             case 2004:
                 // ToastUtils.showShort( "无最新版本");
-                Toast.makeText(this, getString(R.string.update_code_2004), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, getString(R.string.update_code_2004), Toast.LENGTH_SHORT).show();
                 break;
             case 2005:
                 // ToastUtils.showShort( "版本检查返回空");
@@ -248,7 +246,7 @@ public class App extends MultiDexApplication {
                 break;
             case 2007:
                 // ToastUtils.showShort( "已经被忽略的版本");
-                Toast.makeText(this, getString(R.string.update_code_2007), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, getString(R.string.update_code_2007), Toast.LENGTH_SHORT).show();
                 break;
             case 2008:
                 // ToastUtils.showShort( "应用下载的缓存目录为空");
