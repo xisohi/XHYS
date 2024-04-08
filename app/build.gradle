@@ -112,7 +112,7 @@ dependencies {
     implementation "androidx.media3:media3-exoplayer-rtsp:1.1.1"
     implementation "androidx.media3:media3-datasource-rtmp:1.1.1"
     implementation 'androidx.media3:media3-common:1.1.1'
-    implementation "com.github.anilbeesetti.nextlib:nextlib-media3ext:0.6.0" // To add media3 software decoders and extensions
+    implementation "com.github.anilbeesetti.nextlib:nextlib-media3ext:0.5.0" // To add media3 software decoders and extensions
     //implementation "com.github.anilbeesetti.nextlib:nextlib-mediainfo:0.5.0" // To get media info through ffmpeg
 
 
