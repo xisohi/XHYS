@@ -802,7 +802,9 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 dialog.show();
             }
         });
-
+        findViewById(R.id.llUpdate).setOnClickListener(view -> {
+            update();
+        });
         findViewById(R.id.llHomeLive).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -811,9 +813,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 tvHomeDefaultShow.setText(Hawk.get(HawkConfig.HOME_DEFAULT_SHOW, true) ? "开启" : "关闭");
             }
         });
-        findViewById(R.id.llUpdate).setOnClickListener(view -> {
-            update();
-        });
+
         SettingActivity.callback = new SettingActivity.DevModeCallback() {
             @Override
             public void onChange() {
