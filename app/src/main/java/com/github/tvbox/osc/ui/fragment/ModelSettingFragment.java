@@ -803,12 +803,13 @@ public class ModelSettingFragment extends BaseLazyFragment {
             }
         });
         // Update 检查更新
-        findViewById(R.id.llUpdate).setOnClickListener(view -> {
-            XUpdate.newBuild(mContext)
+        findViewById(R.id.llUpdate).setOnClickListener(v -> {
+            XUpdate.newBuild(this.mContext)
                     .updateUrl(Constants.UPDATE_DEFAULT_URL)
                     .updatePrompter(new CustomUpdatePrompter()) // 自定义提示界面
                     .update();
         });
+
 
         findViewById(R.id.llHomeLive).setOnClickListener(new View.OnClickListener() {
             @Override
