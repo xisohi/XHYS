@@ -802,9 +802,14 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 dialog.show();
             }
         });
+        // Update 检查更新
         findViewById(R.id.llUpdate).setOnClickListener(view -> {
-            update();
+            XUpdate.newBuild(mContext)
+                    .updateUrl(Constants.UPDATE_DEFAULT_URL)
+                    .updatePrompter(new CustomUpdatePrompter()) // 自定义提示界面
+                    .update();
         });
+
         findViewById(R.id.llHomeLive).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -827,15 +832,6 @@ public class ModelSettingFragment extends BaseLazyFragment {
     public void onDestroyView() {
         super.onDestroyView();
         SettingActivity.callback = null;
-    }
-    /**
-     * 检查更新
-     */
-    public void update() {
-        XUpdate.newBuild(this.mContext)
-                .updateUrl(Constants.UPDATE_DEFAULT_URL)
-                .updatePrompter(new CustomUpdatePrompter())// 自定义提示界面
-                .update();
     }
 
     String getHomeRecName(int type) {
