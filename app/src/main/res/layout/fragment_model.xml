@@ -1506,7 +1506,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/llUpdate"
+                            android:id="@+id/llupdate"
                             android:layout_width="@dimen/vs_60"
                             android:layout_height="match_parent"
                             android:layout_marginStart="@dimen/vs_5"
