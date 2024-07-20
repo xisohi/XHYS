@@ -45,7 +45,7 @@ import com.lzy.okgo.model.Response;
 import com.orhanobut.hawk.Hawk;
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.owen.tvrecyclerview.widget.V7GridLayoutManager;
-
+import com.github.tvbox.osc.BuildConfig;
 import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
@@ -87,7 +87,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
     private TextView tvSearchView;
     private TextView tvDns;
     private TextView tvFastSearchText;
-
+    private TextView aboutText;
     public static ModelSettingFragment newInstance() {
         return new ModelSettingFragment().setArguments();
     }
@@ -143,6 +143,8 @@ public class ModelSettingFragment extends BaseLazyFragment {
         tvHomeDefaultShow = findViewById(R.id.tvHomeDefaultShow);
         tvHomeDefaultShow.setText(Hawk.get(HawkConfig.HOME_DEFAULT_SHOW, false) ? "开启" : "关闭");
 
+        aboutText = findViewById(R.id.aboutText);
+        aboutText.setText(BuildConfig.FLAVOR_abi + "-" + BuildConfig.FLAVOR_brand);
         //takagen99 : Set HomeApi as default
         findViewById(R.id.llHomeApi).requestFocus();
 
