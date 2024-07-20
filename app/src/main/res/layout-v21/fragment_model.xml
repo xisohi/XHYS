@@ -1428,11 +1428,10 @@
 
                         <LinearLayout
                             android:id="@+id/showFastSearch"
-                            android:layout_width="@dimen/vs_0"
+                            android:layout_width="@dimen/vs_225"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="@dimen/vs_5"
                             android:layout_marginRight="@dimen/vs_5"
-                            android:layout_weight="1"
                             android:background="@drawable/shape_setting_model_focus"
                             android:focusable="true"
                             android:gravity="center_vertical"
