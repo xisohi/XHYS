@@ -3,6 +3,7 @@ package com.github.tvbox.osc.update;
 import com.github.tvbox.osc.BuildConfig;
 import com.github.tvbox.osc.base.App;
 import com.github.tvbox.osc.update.GithubTagEntity;
+import com.github.tvbox.osc.util.OkGoHelper;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
