@@ -1,5 +1,6 @@
 package com.github.tvbox.osc.ui.fragment;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,7 +32,9 @@ import com.github.tvbox.osc.ui.dialog.HomeIconDialog;
 import com.github.tvbox.osc.ui.dialog.MediaSettingDialog;
 import com.github.tvbox.osc.ui.dialog.ResetDialog;
 import com.github.tvbox.osc.ui.dialog.SelectDialog;
+import android.content.Context;
 import com.github.tvbox.osc.ui.dialog.XWalkInitDialog;
+import com.github.tvbox.osc.update.Updater;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.util.HistoryHelper;
@@ -51,7 +54,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
+import com.github.tvbox.osc.BuildConfig;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 import okhttp3.HttpUrl;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
@@ -86,7 +89,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
     private TextView tvSearchView;
     private TextView tvDns;
     private TextView tvFastSearchText;
-
+    private TextView aboutText;
     public static ModelSettingFragment newInstance() {
         return new ModelSettingFragment().setArguments();
     }
@@ -145,6 +148,8 @@ public class ModelSettingFragment extends BaseLazyFragment {
         //takagen99 : Set HomeApi as default
         findViewById(R.id.llHomeApi).requestFocus();
 
+        aboutText = findViewById(R.id.aboutText);
+        aboutText.setText(BuildConfig.FLAVOR_abi + "-" + BuildConfig.FLAVOR_brand);
         findViewById(R.id.llDebug).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -793,16 +798,10 @@ public class ModelSettingFragment extends BaseLazyFragment {
             }
         });
         // About App -----------------------------------------------
-        findViewById(R.id.llAbout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FastClickCheckUtil.check(v);
-                AboutDialog dialog = new AboutDialog(mActivity);
-                dialog.show();
-            }
-        });
-
-        findViewById(R.id.llHomeLive).setOnClickListener(new View.OnClickListener() {
+// 假设 mActivity 是当前 Activity 的有效引用
+        findViewById(R.id.llAbout).setOnClickListener(view -> {
+            Updater.get().update(mActivity, true);
+        });        findViewById(R.id.llHomeLive).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FastClickCheckUtil.check(v);
