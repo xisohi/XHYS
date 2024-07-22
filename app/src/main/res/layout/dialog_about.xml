@@ -8,15 +8,50 @@
     android:padding="@dimen/vs_30">
 
     <TextView
+        android:id="@+id/version"
         android:layout_width="@dimen/vs_600"
         android:layout_height="wrap_content"
+        android:focusable="true"
         android:lineSpacingExtra="@dimen/ts_50"
         android:lineSpacingMultiplier="0"
         android:shadowColor="@color/color_000000_60"
         android:shadowDx="0"
         android:shadowDy="0"
         android:shadowRadius="3"
-        android:text="本软件只提供聚合展示功能，所有资源来自网上, 软件不参与任何制作, 上传, 储存, 下载等内容. 软件仅供学习参考, 请于安装后24小时内删除。\n\n打包分发请保留出处\nhttps://github.com/CatVodTVOfficial/TVBoxOSC"
+        android:text="1.0"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/ts_24" />
+
+    <TextView
+        android:layout_width="@dimen/vs_600"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:focusable="true"
+        android:lineSpacingExtra="@dimen/ts_50"
+        android:lineSpacingMultiplier="0"
+        android:shadowColor="@color/color_000000_60"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="3"
+        android:text="@string/about_text_string"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/ts_24" />
+
+    <TextView
+        android:id="@+id/about_text"
+        android:layout_width="@dimen/vs_600"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/shape_live_select"
+        android:clickable="true"
+        android:focusable="true"
+        android:lineSpacingExtra="@dimen/ts_50"
+        android:lineSpacingMultiplier="0"
+        android:shadowColor="@color/color_000000_60"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="3"
+        android:text="@string/update_check_confirm"
         android:textColor="@color/color_FFFFFF"
         android:textSize="@dimen/ts_24" />
 

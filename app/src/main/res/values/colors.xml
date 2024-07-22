@@ -72,7 +72,8 @@
     <color name="subtitle_text_color_8">#4C4C4C</color>
     <color name="subtitle_text_color_9">#333333</color>
 
-
+    <color name="grey_900">#212121</color>
+    <color name="grey_300">#E0E0E0</color>
     <!-- 定义颜色数组 -->
     <array name="subtitle_text_color">
         <item>@color/subtitle_text_color_1</item>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/vs_480"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_dialog_bg2"
+    android:maxHeight="@dimen/vs_400"
+    android:minHeight="@dimen/vs_400"
+    android:orientation="vertical"
+    android:layout_marginBottom="50dp"
+    android:layout_marginTop="50dp"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:letterSpacing="0.02"
+        android:textColor="@color/grey_900"
+        android:textSize="18sp"
+        tools:text="@string/update_version" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/grey_300" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:maxHeight="@dimen/vs_600"
+        android:layout_marginBottom="16dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.02"
+            android:lineSpacingExtra="8dp"
+            android:textColor="@color/grey_900"
+            android:textSize="16sp"
+            tools:text="更新测试" />
+
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/confirm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_dialog_main"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="@string/update_confirm"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/button_dialog_main"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="@string/hm_cancel"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+</LinearLayout>

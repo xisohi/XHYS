@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.Nullable;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
@@ -143,7 +144,10 @@ public class HomeActivity extends BaseActivity {
         }
         initData();
     }
-
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
     // takagen99: Added to allow read string
     public static Resources getRes() {
         return res;

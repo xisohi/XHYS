@@ -191,6 +191,16 @@
     <string name="sub_style">Style</string>
     <string name="sub_style_text">ABC.</string>
 
+    //update
+    <string name="update_version">New version</string>
+    <string name="update_no_new_version">It\'s already the latest version</string>
+    <string name="update_check">Checking for updates…</string>
+    <string name="update_confirm">Update</string>
+    <string name="update_check_confirm">Check for updates </string>
+    <string name="update_check_file_size">Incomplete file download </string>
+    <string name="update_install_tip">If the installation page does not pop up, please go to Settings > About> Check for updates and obtain the new version for installation </string>
+    <string name="about_text_string">This software only provides aggregation and display functions. All resources come from the internet. The software does not participate in any creation, uploading, storage, or downloading activities. This software is for educational reference only, please delete it within 24 hours after installation.\n\nWhen distributing the package, please retain the source information:\nhttps://github.com/CatVodTVOfficial/TVBoxOSC</string>
+
     <string-array name="doh_name">
         <item>System</item>
         <item>Tencent</item>

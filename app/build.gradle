@@ -115,7 +115,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     implementation files('libs\\thunder.jar')
     implementation project(path: ':quickjs')
-
+    implementation "io.noties.markwon:core:4.6.2"
     kapt 'androidx.room:room-compiler:2.5.1'
     implementation 'com.github.alidili:FlowLayout:v1.5'
     implementation 'androidx.room:room-runtime:2.5.1'

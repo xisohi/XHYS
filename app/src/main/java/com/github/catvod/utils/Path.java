@@ -239,4 +239,15 @@ public class Path {
             return file;
         }
     }
+    public static File create(File file) throws Exception {
+        try {
+            if (!file.canWrite()) file.setWritable(true);
+            if (!file.exists()) file.createNewFile();
+            Shell.exec("chmod 777 " + file);
+            return file;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return file;
+        }
+    }
 }

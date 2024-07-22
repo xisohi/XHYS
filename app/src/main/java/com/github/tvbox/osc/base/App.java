@@ -1,9 +1,11 @@
 package com.github.tvbox.osc.base;
 
 import android.os.Environment;
-
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import androidx.multidex.MultiDexApplication;
-
+import androidx.core.os.HandlerCompat;
 import com.github.catvod.crawler.JarLoader;
 import com.github.catvod.crawler.JsLoader;
 import com.github.tvbox.osc.R;
@@ -24,15 +26,16 @@ import com.kingja.loadsir.core.LoadSir;
 import com.orhanobut.hawk.Hawk;
 import com.p2p.P2PClass;
 import com.whl.quickjs.android.QuickJSLoader;
-
+import com.github.catvod.Init;
 import java.io.File;
-
+import com.google.gson.Gson;
 import io.github.inflationx.calligraphy3.CalligraphyConfig;
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
 import io.github.inflationx.viewpump.ViewPump;
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.unit.Subunits;
-
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 /**
  * @author pj567
  * @date :2020/12/17
@@ -45,7 +48,41 @@ public class App extends MultiDexApplication {
     private static String dashData;
     public static ViewPump viewPump = null;
 
+    //线程数
+    public static final int THREAD_POOL = 5;
+    private final ExecutorService executor;
+    private final Handler handler;
+    private final Gson mGson = new Gson();
 
+    public App() {
+        executor = Executors.newFixedThreadPool(THREAD_POOL * 2);
+        handler = HandlerCompat.createAsync(Looper.getMainLooper());
+    }
+
+    public static Gson getGson() {
+        return get().mGson;
+    }
+
+    public static void execute(Runnable runnable) {
+        get().executor.execute(runnable);
+    }
+
+    public static void post(Runnable runnable) {
+        get().handler.post(runnable);
+    }
+
+    public static void post(Runnable runnable, long delayMillis) {
+        removeCallbacks(runnable);
+        if (delayMillis >= 0) get().handler.postDelayed(runnable, delayMillis);
+    }
+
+    public static void removeCallbacks(Runnable runnable) {
+        get().handler.removeCallbacks(runnable);
+    }
+
+    public static void removeCallbacks(Runnable... runnable) {
+        for (Runnable r : runnable) get().handler.removeCallbacks(r);
+    }
     @Override
     public void onCreate() {
         super.onCreate();
@@ -149,7 +186,9 @@ public class App extends MultiDexApplication {
     public static App getInstance() {
         return instance;
     }
-
+    public static App get() {
+        return getInstance();
+    }
     private void putDefault(String key, Object value) {
         if (!Hawk.contains(key)) {
             Hawk.put(key, value);
