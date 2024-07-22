@@ -1,5 +1,6 @@
 package com.github.tvbox.osc.update
 
+import com.github.tvbox.osc.util.OkGoHelper
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
