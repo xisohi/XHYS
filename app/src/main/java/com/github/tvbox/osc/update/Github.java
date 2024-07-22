@@ -24,7 +24,7 @@ public class Github {
 
     private int currentPage = 0;
     //获取详情地址
-    private static final String UPDATE_LIST_URL = "https://api.github.com/repos/o0HalfLife0o/TVBoxOSC/releases?per_page=5&page=";
+    private static final String UPDATE_LIST_URL = "https://api.github.com/repos/xisohi/TVBoxOSC/releases?per_page=5&page=";
     //https://api.github.com/repos/o0HalfLife0o/TVBoxOSC/releases/latest
     //当前分页数据
     private List<GithubTagEntity> currentPageList;
