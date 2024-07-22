@@ -16,7 +16,7 @@ import okhttp3.Response;
 //用于更新用的
 public class Github {
     //Tag名称
-    private static final String TAG_NAME = "takagen99";
+    private static final String TAG_NAME = "xisohi";
 
     private static final String PREFIX = "1.0.";
     //最大分页数
