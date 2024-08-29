@@ -207,7 +207,6 @@ public class App extends MultiDexApplication {
                 }).build();
         server.startup();
     }
-}
 
     /**
      * 初始化更新组件服务
