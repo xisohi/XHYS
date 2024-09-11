@@ -224,8 +224,6 @@ public class App extends MultiDexApplication {
         getInstance().handler.removeCallbacks(runnable);
         if (delayMillis >= 0) getInstance().handler.postDelayed(runnable, delayMillis);
     }
-}
-
     /**
      * 初始化更新组件服务
      */
