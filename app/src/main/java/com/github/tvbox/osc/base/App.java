@@ -1,7 +1,10 @@
 package com.github.tvbox.osc.base;
 
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 
+import androidx.core.os.HandlerCompat;
 import androidx.multidex.MultiDexApplication;
 
 import com.github.catvod.crawler.JarLoader;
@@ -55,11 +58,16 @@ public class App extends MultiDexApplication {
     private static String dashData;
     public static ViewPump viewPump = null;
     private static Server server = null;
+    private final Handler handler;
+
+    public App() {
+        instance = this;
+        handler = HandlerCompat.createAsync(Looper.getMainLooper());
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;
         SubtitleHelper.initSubtitleColor(this);
         initParams();
         // takagen99 : Initialize Locale
@@ -207,6 +215,16 @@ public class App extends MultiDexApplication {
                 }).build();
         server.startup();
     }
+
+    public static void post(Runnable runnable) {
+        getInstance().handler.post(runnable);
+    }
+
+    public static void post(Runnable runnable, long delayMillis) {
+        getInstance().handler.removeCallbacks(runnable);
+        if (delayMillis >= 0) getInstance().handler.postDelayed(runnable, delayMillis);
+    }
+}
 
     /**
      * 初始化更新组件服务
