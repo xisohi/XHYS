@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
@@ -35,7 +34,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import me.jessyan.autosize.AutoSizeCompat;
@@ -318,42 +316,33 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
             getWindow().setBackgroundDrawable(globalWp);
             return;
         }
-        BitmapDrawable wallpaper = null;
         try {
-            // 尝试从网络链接下载图片
-            String imageUrl = "http://lcjly.cn/tupian";
-            Bitmap bitmap = BitmapFactory.decodeStream(new URL(imageUrl).openConnection().getInputStream());
-            wallpaper = new BitmapDrawable(getResources(), bitmap);
-        } catch (IOException e) {
-            e.printStackTrace();
-            // 如果网络图片下载失败，尝试使用本地图片
-            try {
-                File wp = new File(getFilesDir().getAbsolutePath() + "/wp");
-                if (wp.exists()) {
-                    BitmapFactory.Options opts = new BitmapFactory.Options();
-                    opts.inJustDecodeBounds = true;
-                    BitmapFactory.decodeFile(wp.getAbsolutePath(), opts);
-                    int imageHeight = opts.outHeight;
-                    int imageWidth = opts.outWidth;
-                    int picHeight = 720;
-                    int picWidth = 1080;
-                    int scaleX = imageWidth / picWidth;
-                    int scaleY = imageHeight / picHeight;
-                    int scale = Math.max(Math.max(scaleX, scaleY), 1);
-                    opts.inJustDecodeBounds = false;
-                    opts.inSampleSize = scale;
-                    wallpaper = new BitmapDrawable(BitmapFactory.decodeFile(wp.getAbsolutePath(), opts));
-                } else {
-                    wallpaper = null;
-                }
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
-                wallpaper = null;
+            File wp = new File(getFilesDir().getAbsolutePath() + "/wp");
+            if (wp.exists()) {
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                opts.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(wp.getAbsolutePath(), opts);
+                // 从Options中获取图片的分辨率
+                int imageHeight = opts.outHeight;
+                int imageWidth = opts.outWidth;
+                int picHeight = 720;
+                int picWidth = 1080;
+                int scaleX = imageWidth / picWidth;
+                int scaleY = imageHeight / picHeight;
+                int scale = Math.max(Math.max(scaleX, scaleY), 1);
+                opts.inJustDecodeBounds = false;
+                // 采样率
+                opts.inSampleSize = scale;
+                globalWp = new BitmapDrawable(BitmapFactory.decodeFile(wp.getAbsolutePath(), opts));
+            } else {
+                globalWp = null;
             }
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+            globalWp = null;
         }
-        if (wallpaper != null) {
-            getWindow().setBackgroundDrawable(wallpaper);
-            globalWp = wallpaper;
+        if (globalWp != null) {
+            getWindow().setBackgroundDrawable(globalWp);
         } else {
             getWindow().setBackgroundDrawableResource(R.drawable.app_bg);
         }
