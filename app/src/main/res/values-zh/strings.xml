@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">星辉影视</string>
     <string name="app_home">首页</string>
-    <string name="app_source">https://tvboxosc.pages.dev/XHYSyuan.json</string>
+    <string name="app_source">http://lcjly.cn/tvbox/XHYSyuan.json</string>
 
     // Home Page //
     <string name="hm_ok">加载成功</string>
