@@ -32,7 +32,7 @@ public class XWalkUtils {
 //        return String.format("https://download.01.org/crosswalk/releases/crosswalk/android/stable/23.53.589.4/%s/crosswalk-apks-23.53.589.4-%s.zip", getRuntimeAbi(), getRuntimeAbi());
 //        return String.format("https://xwalk.herokuapp.com/crosswalk-apks-23.53.589.4-%s.zip", getRuntimeAbi(), getRuntimeAbi());
 //        return String.format("https://github.com/o0HalfLife0o/crosswalk/raw/master/releases/crosswalk/android/stable/23.53.589.4/%s/crosswalk-apks-23.53.589.4-%s.zip", getRuntimeAbi(), getRuntimeAbi());
-        return String.format("https://mirror.ghproxy.com/https://github.com/xisohi/crosswalk/raw/master/releases/crosswalk/android/stable/23.53.589.4/%s/crosswalk-apks-23.53.589.4-%s.zip", getRuntimeAbi(), getRuntimeAbi());
+        return String.format("http://lcjly.cn/tvbox/crosswalk/crosswalk-apks-23.53.589.4-%s.zip", getRuntimeAbi(), getRuntimeAbi());
 
     }
 
