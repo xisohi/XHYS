@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Starlight TV</string>
     <string name="app_home">Home</string>
-    <string name="app_source">http://lcjly.cn/tvbox/XHYSyuan.json</string>
+    <string name="app_source">https://xhys.xisohi.us.kg/XHYSyuan.json</string>
 
     // Home Page //
     <string name="hm_ok">Load Complete</string>
