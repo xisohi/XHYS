@@ -7,16 +7,20 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.PermissionChecker;
+
 import com.blankj.utilcode.util.ActivityUtils;
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.callback.EmptyCallback;
@@ -31,34 +35,32 @@ import com.kingja.loadsir.core.LoadSir;
 import com.orhanobut.hawk.Hawk;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import me.jessyan.autosize.AutoSizeCompat;
 import me.jessyan.autosize.internal.CustomAdapt;
 import xyz.doikki.videoplayer.util.CutoutUtil;
 
-/**
- * @author pj567
- * @date :2020/12/17
- * @description:
- */
 public abstract class BaseActivity extends AppCompatActivity implements CustomAdapt {
     protected Context mContext;
     private LoadService mLoadService;
-
     private static float screenRatio = -100.0f;
+    private static final String WALLPAPER_URL = "wallpaper_url";
+    private static BitmapDrawable globalWp = null;
 
-    // takagen99 : Fix for Locale change not persist on higher Android version
     @Override
     protected void attachBaseContext(Context base) {
         Context newBase = base;
         if (App.viewPump != null) {
             newBase = ViewPumpContextWrapper.wrap(base, App.viewPump);
         }
-
         if (Hawk.get(HawkConfig.HOME_LOCALE, 0) == 0) {
             super.attachBaseContext(LocaleHelper.onAttach(newBase, "zh"));
         } else {
@@ -100,7 +102,7 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResID());
         mContext = this;
-        CutoutUtil.adaptCutoutAboveAndroidP(mContext, true);//设置刘海
+        CutoutUtil.adaptCutoutAboveAndroidP(mContext, true);
         AppManager.getInstance().addActivity(this);
         init();
         setScreenOn();
@@ -113,17 +115,98 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
         changeWallpaper(false);
     }
 
-    // takagen99 : Check for Gesture or 3-Buttons NavBar
-    // 0 : 3-Button NavBar
-    // 1 : 2-Button NavBar (Android P)
-    // 2 : Gesture full screen
-    public static int isEdgeToEdgeEnabled(Context context) {
-        Resources resources = context.getResources();
-        int resourceId = resources.getIdentifier("config_navBarInteractionMode", "integer", "android");
-        if (resourceId > 0) {
-            return resources.getInteger(resourceId);
+    public void changeWallpaper(boolean force) {
+        if (!force && globalWp != null) {
+            Log.d("BaseActivity", "Using cached wallpaper.");
+            getWindow().setBackgroundDrawable(globalWp);
+            return;
         }
-        return 0;
+
+        // 获取纯 URL
+        String wallpaperUrl = Hawk.get(HawkConfig.WALLPAPER_URL, "https://xhys.lcjly.cn/image/bg.jpg");
+        Log.d("BaseActivity", "Wallpaper URL from Hawk: " + wallpaperUrl);
+
+        // 检查网络状态
+        if (!isNetworkAvailable()) {
+            Log.w("BaseActivity", "No network connection available. Using default wallpaper.");
+            useDefaultWallpaper();
+            return;
+        }
+
+        // 在后台线程加载网络图片
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                URL url = new URL(wallpaperUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setConnectTimeout(5000); // 设置连接超时时间
+                connection.setReadTimeout(5000); // 设置读取超时时间
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    InputStream inputStream = connection.getInputStream();
+                    BitmapDrawable drawable = new BitmapDrawable(getResources(), BitmapFactory.decodeStream(inputStream));
+                    runOnUiThread(() -> {
+                        globalWp = drawable;
+                        getWindow().setBackgroundDrawable(globalWp);
+                        Log.d("BaseActivity", "Wallpaper loaded successfully from network.");
+                    });
+                } else {
+                    Log.e("BaseActivity", "Failed to load wallpaper from network. Response code: " + responseCode);
+                    runOnUiThread(() -> {
+                        Log.w("BaseActivity", "Failed to load wallpaper from network. Using default.");
+                        useDefaultWallpaper();
+                    });
+                }
+            } catch (Exception e) {
+                Log.e("BaseActivity", "Failed to load wallpaper from network: " + e.getMessage(), e);
+                runOnUiThread(() -> {
+                    Log.w("BaseActivity", "Failed to load wallpaper from network. Using default.");
+                    useDefaultWallpaper();
+                });
+            }
+        });
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    private void useDefaultWallpaper() {
+        if (globalWp == null) {
+            globalWp = new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.app_bg));
+        }
+        getWindow().setBackgroundDrawable(globalWp);
+    }
+
+    protected abstract int getLayoutResID();
+    protected abstract void init();
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AppManager.getInstance().finishActivity(this);
+    }
+
+    public void setScreenOn() {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    public void hideSystemUI(boolean shownavbar) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            int uiVisibility = getWindow().getDecorView().getSystemUiVisibility();
+            uiVisibility |= View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            uiVisibility |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
+            uiVisibility |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+            uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE;
+            uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            if (!shownavbar) {
+                uiVisibility |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+                uiVisibility |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+            }
+            getWindow().getDecorView().setSystemUiVisibility(uiVisibility);
+        }
     }
 
     public void hideSysBar() {
@@ -149,24 +232,6 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
             uiOptions |= View.SYSTEM_UI_FLAG_FULLSCREEN;
             uiOptions |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             getWindow().getDecorView().setSystemUiVisibility(uiOptions);
-        }
-    }
-
-    public void hideSystemUI(boolean shownavbar) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            int uiVisibility = getWindow().getDecorView().getSystemUiVisibility();
-            uiVisibility |= View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-            uiVisibility |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
-            uiVisibility |= View.SYSTEM_UI_FLAG_FULLSCREEN;
-            uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE;
-            uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-            if (!shownavbar) {
-                uiVisibility |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-                uiVisibility |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
-            }
-            getWindow().getDecorView().setSystemUiVisibility(uiVisibility);
-            // set content behind navigation bar
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
     }
 
@@ -201,10 +266,6 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
         return has;
     }
 
-    protected abstract int getLayoutResID();
-
-    protected abstract void init();
-
     protected void setLoadSir(View view) {
         if (mLoadService == null) {
             mLoadService = LoadSir.getDefault().register(view, new Callback.OnReloadListener() {
@@ -233,20 +294,13 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        AppManager.getInstance().finishActivity(this);
-    }
-
     public void jumpActivity(Class<? extends BaseActivity> clazz) {
         Intent intent = new Intent(mContext, clazz);
         startActivity(intent);
     }
 
     public void jumpActivity(Class<? extends BaseActivity> clazz, Bundle bundle) {
-    	if (DetailActivity.class.isAssignableFrom(clazz) && Hawk.get(HawkConfig.BACKGROUND_PLAY_TYPE, 0) == 2) {
-            //1.重新打开singleTask的页面(关闭小窗) 2.关闭画中画，重进detail再开启画中画会闪退
+        if (DetailActivity.class.isAssignableFrom(clazz) && Hawk.get(HawkConfig.BACKGROUND_PLAY_TYPE, 0) == 2) {
             ActivityUtils.finishActivity(DetailActivity.class);
         }
         Intent intent = new Intent(mContext, clazz);
@@ -294,57 +348,13 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
         getWindow().setAttributes(lparams);
     }
 
-    public void setScreenOn() {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-    }
-
     public void setScreenOff() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
-    // takagen99: Added Theme Color
     public int getThemeColor() {
         TypedArray a = mContext.obtainStyledAttributes(R.styleable.themeColor);
         int themeColor = a.getColor(R.styleable.themeColor_color_theme, 0);
         return themeColor;
-    }
-
-    protected static BitmapDrawable globalWp = null;
-
-    public void changeWallpaper(boolean force) {
-        if (!force && globalWp != null) {
-            getWindow().setBackgroundDrawable(globalWp);
-            return;
-        }
-        try {
-            File wp = new File(getFilesDir().getAbsolutePath() + "/wp");
-            if (wp.exists()) {
-                BitmapFactory.Options opts = new BitmapFactory.Options();
-                opts.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(wp.getAbsolutePath(), opts);
-                // 从Options中获取图片的分辨率
-                int imageHeight = opts.outHeight;
-                int imageWidth = opts.outWidth;
-                int picHeight = 720;
-                int picWidth = 1080;
-                int scaleX = imageWidth / picWidth;
-                int scaleY = imageHeight / picHeight;
-                int scale = Math.max(Math.max(scaleX, scaleY), 1);
-                opts.inJustDecodeBounds = false;
-                // 采样率
-                opts.inSampleSize = scale;
-                globalWp = new BitmapDrawable(BitmapFactory.decodeFile(wp.getAbsolutePath(), opts));
-            } else {
-                globalWp = null;
-            }
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-            globalWp = null;
-        }
-        if (globalWp != null) {
-            getWindow().setBackgroundDrawable(globalWp);
-        } else {
-            getWindow().setBackgroundDrawableResource(R.drawable.app_bg);
-        }
     }
 }
