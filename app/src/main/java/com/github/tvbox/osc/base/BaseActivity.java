@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -105,7 +106,7 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResID());
         mContext = this;
-        CutoutUtil.adaptCutoutAboveAndroidP(mContext, true);//设置刘海
+        CutoutUtil.adaptCutoutAboveAndroidP(mContext, true); // 设置刘海
         AppManager.getInstance().addActivity(this);
         init();
         setScreenOn();
@@ -250,7 +251,7 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
     }
 
     public void jumpActivity(Class<? extends BaseActivity> clazz, Bundle bundle) {
-    	if (DetailActivity.class.isAssignableFrom(clazz) && Hawk.get(HawkConfig.BACKGROUND_PLAY_TYPE, 0) == 2) {
+        if (DetailActivity.class.isAssignableFrom(clazz) && Hawk.get(HawkConfig.BACKGROUND_PLAY_TYPE, 0) == 2) {
             //1.重新打开singleTask的页面(关闭小窗) 2.关闭画中画，重进detail再开启画中画会闪退
             ActivityUtils.finishActivity(DetailActivity.class);
         }
@@ -318,22 +319,28 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
 
     public void changeWallpaper(boolean force) {
         if (!force && globalWp != null) {
+            Log.d("BaseActivity", "Using cached wallpaper.");
             getWindow().setBackgroundDrawable(globalWp);
             return;
         }
 
         // 优先尝试加载网络图片
         String wallpaperUrl = Hawk.get(HawkConfig.WALLPAPER_URL, "https://xhys.lcjly.cn/image/bg.jpg");
+        Log.d("BaseActivity", "Wallpaper URL from Hawk: " + wallpaperUrl);
+
         if (!wallpaperUrl.isEmpty()) {
             try {
                 BitmapDrawable networkWp = loadWallpaperFromNetwork(wallpaperUrl);
                 if (networkWp != null) {
                     globalWp = networkWp;
+                    Log.d("BaseActivity", "Wallpaper loaded successfully from network.");
                     getWindow().setBackgroundDrawable(globalWp);
                     return;
+                } else {
+                    Log.w("BaseActivity", "Failed to load wallpaper from network, URL: " + wallpaperUrl);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e("BaseActivity", "Exception while loading wallpaper from network: " + e.getMessage(), e);
             }
         }
 
@@ -356,16 +363,19 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
                 // 采样率
                 opts.inSampleSize = scale;
                 globalWp = new BitmapDrawable(BitmapFactory.decodeFile(wp.getAbsolutePath(), opts));
+                Log.d("BaseActivity", "Wallpaper loaded successfully from local file.");
             } else {
+                Log.w("BaseActivity", "Local wallpaper file does not exist.");
                 globalWp = null;
             }
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
+            Log.e("BaseActivity", "Exception while loading wallpaper from local file: " + throwable.getMessage(), throwable);
             globalWp = null;
         }
 
         // 如果本地图片也不存在，使用内置图片
         if (globalWp == null) {
+            Log.d("BaseActivity", "Using default wallpaper from resources.");
             globalWp = new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.app_bg));
         }
 
@@ -380,7 +390,8 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
             InputStream inputStream = new URL(url).openStream();
             bitmap = BitmapFactory.decodeStream(inputStream);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("BaseActivity", "IOException while loading wallpaper from URL: " + url, e);
+            throw e; // Re-throw to handle it in the calling method
         }
         return bitmap != null ? new BitmapDrawable(getResources(), bitmap) : null;
     }
