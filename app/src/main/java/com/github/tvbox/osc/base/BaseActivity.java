@@ -5,21 +5,18 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.PermissionChecker;
-
 import com.blankj.utilcode.util.ActivityUtils;
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.callback.EmptyCallback;
@@ -36,9 +33,7 @@ import com.orhanobut.hawk.Hawk;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import me.jessyan.autosize.AutoSizeCompat;
@@ -55,8 +50,7 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
     private LoadService mLoadService;
 
     private static float screenRatio = -100.0f;
-    // 定义壁纸 URL 的键
-    private static final String WALLPAPER_URL = "wallpaper_url";
+
     // takagen99 : Fix for Locale change not persist on higher Android version
     @Override
     protected void attachBaseContext(Context base) {
@@ -106,7 +100,7 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResID());
         mContext = this;
-        CutoutUtil.adaptCutoutAboveAndroidP(mContext, true); // 设置刘海
+        CutoutUtil.adaptCutoutAboveAndroidP(mContext, true);//设置刘海
         AppManager.getInstance().addActivity(this);
         init();
         setScreenOn();
@@ -139,7 +133,7 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
             //    uiOptions |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
             uiOptions |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
             //    uiOptions |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-            //    uiOptions |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+            uiOptions |= View.SYSTEM_UI_FLAG_FULLSCREEN;
             uiOptions |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             getWindow().getDecorView().setSystemUiVisibility(uiOptions);
         }
@@ -251,7 +245,7 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
     }
 
     public void jumpActivity(Class<? extends BaseActivity> clazz, Bundle bundle) {
-        if (DetailActivity.class.isAssignableFrom(clazz) && Hawk.get(HawkConfig.BACKGROUND_PLAY_TYPE, 0) == 2) {
+    	if (DetailActivity.class.isAssignableFrom(clazz) && Hawk.get(HawkConfig.BACKGROUND_PLAY_TYPE, 0) == 2) {
             //1.重新打开singleTask的页面(关闭小窗) 2.关闭画中画，重进detail再开启画中画会闪退
             ActivityUtils.finishActivity(DetailActivity.class);
         }
@@ -319,32 +313,9 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
 
     public void changeWallpaper(boolean force) {
         if (!force && globalWp != null) {
-            Log.d("BaseActivity", "Using cached wallpaper.");
             getWindow().setBackgroundDrawable(globalWp);
             return;
         }
-
-        // 优先尝试加载网络图片
-        String wallpaperUrl = Hawk.get(HawkConfig.WALLPAPER_URL, "https://xhys.lcjly.cn/image/bg.jpg");
-        Log.d("BaseActivity", "Wallpaper URL from Hawk: " + wallpaperUrl);
-
-        if (!wallpaperUrl.isEmpty()) {
-            try {
-                BitmapDrawable networkWp = loadWallpaperFromNetwork(wallpaperUrl);
-                if (networkWp != null) {
-                    globalWp = networkWp;
-                    Log.d("BaseActivity", "Wallpaper loaded successfully from network.");
-                    getWindow().setBackgroundDrawable(globalWp);
-                    return;
-                } else {
-                    Log.w("BaseActivity", "Failed to load wallpaper from network, URL: " + wallpaperUrl);
-                }
-            } catch (Exception e) {
-                Log.e("BaseActivity", "Exception while loading wallpaper from network: " + e.getMessage(), e);
-            }
-        }
-
-        // 如果网络图片加载失败，尝试加载本地图片
         try {
             File wp = new File(getFilesDir().getAbsolutePath() + "/wp");
             if (wp.exists()) {
@@ -363,36 +334,17 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
                 // 采样率
                 opts.inSampleSize = scale;
                 globalWp = new BitmapDrawable(BitmapFactory.decodeFile(wp.getAbsolutePath(), opts));
-                Log.d("BaseActivity", "Wallpaper loaded successfully from local file.");
             } else {
-                Log.w("BaseActivity", "Local wallpaper file does not exist.");
                 globalWp = null;
             }
         } catch (Throwable throwable) {
-            Log.e("BaseActivity", "Exception while loading wallpaper from local file: " + throwable.getMessage(), throwable);
+            throwable.printStackTrace();
             globalWp = null;
         }
-
-        // 如果本地图片也不存在，使用内置图片
-        if (globalWp == null) {
-            Log.d("BaseActivity", "Using default wallpaper from resources.");
-            globalWp = new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.app_bg));
-        }
-
         if (globalWp != null) {
             getWindow().setBackgroundDrawable(globalWp);
+        } else {
+            getWindow().setBackgroundDrawableResource(R.drawable.app_bg);
         }
-    }
-
-    private BitmapDrawable loadWallpaperFromNetwork(String url) throws IOException {
-        Bitmap bitmap = null;
-        try {
-            InputStream inputStream = new URL(url).openStream();
-            bitmap = BitmapFactory.decodeStream(inputStream);
-        } catch (IOException e) {
-            Log.e("BaseActivity", "IOException while loading wallpaper from URL: " + url, e);
-            throw e; // Re-throw to handle it in the calling method
-        }
-        return bitmap != null ? new BitmapDrawable(getResources(), bitmap) : null;
     }
 }
