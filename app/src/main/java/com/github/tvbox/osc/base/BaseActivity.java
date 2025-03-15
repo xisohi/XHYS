@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
@@ -17,6 +18,7 @@ import android.view.WindowManager;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.PermissionChecker;
+
 import com.blankj.utilcode.util.ActivityUtils;
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.callback.EmptyCallback;
@@ -33,7 +35,9 @@ import com.orhanobut.hawk.Hawk;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import me.jessyan.autosize.AutoSizeCompat;
@@ -50,7 +54,8 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
     private LoadService mLoadService;
 
     private static float screenRatio = -100.0f;
-
+    // 定义壁纸 URL 的键
+    private static final String WALLPAPER_URL = "wallpaper_url";
     // takagen99 : Fix for Locale change not persist on higher Android version
     @Override
     protected void attachBaseContext(Context base) {
@@ -133,7 +138,7 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
             //    uiOptions |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
             uiOptions |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
             //    uiOptions |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-            uiOptions |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+            //    uiOptions |= View.SYSTEM_UI_FLAG_FULLSCREEN;
             uiOptions |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             getWindow().getDecorView().setSystemUiVisibility(uiOptions);
         }
@@ -316,6 +321,23 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
             getWindow().setBackgroundDrawable(globalWp);
             return;
         }
+
+        // 优先尝试加载网络图片
+        String wallpaperUrl = Hawk.get(HawkConfig.WALLPAPER_URL, "https://xhys.lcjly.cn/image/bg.jpg");
+        if (!wallpaperUrl.isEmpty()) {
+            try {
+                BitmapDrawable networkWp = loadWallpaperFromNetwork(wallpaperUrl);
+                if (networkWp != null) {
+                    globalWp = networkWp;
+                    getWindow().setBackgroundDrawable(globalWp);
+                    return;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // 如果网络图片加载失败，尝试加载本地图片
         try {
             File wp = new File(getFilesDir().getAbsolutePath() + "/wp");
             if (wp.exists()) {
@@ -341,10 +363,25 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
             throwable.printStackTrace();
             globalWp = null;
         }
+
+        // 如果本地图片也不存在，使用内置图片
+        if (globalWp == null) {
+            globalWp = new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.app_bg));
+        }
+
         if (globalWp != null) {
             getWindow().setBackgroundDrawable(globalWp);
-        } else {
-            getWindow().setBackgroundDrawableResource(R.drawable.app_bg);
         }
+    }
+
+    private BitmapDrawable loadWallpaperFromNetwork(String url) throws IOException {
+        Bitmap bitmap = null;
+        try {
+            InputStream inputStream = new URL(url).openStream();
+            bitmap = BitmapFactory.decodeStream(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap != null ? new BitmapDrawable(getResources(), bitmap) : null;
     }
 }
