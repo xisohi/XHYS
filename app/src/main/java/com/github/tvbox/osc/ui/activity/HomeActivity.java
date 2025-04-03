@@ -22,6 +22,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -369,6 +371,14 @@ public class HomeActivity extends BaseActivity {
         setLoadSir(this.contentLayout);
         //mHandler.postDelayed(mFindFocus, 250);
     }
+    //站点切换
+    public static void homeRecf() {
+        int homeRec = Hawk.get(HawkConfig.HOME_REC, -1);
+        int limit = 2;
+        if (homeRec == limit) homeRec = -1;
+        homeRec++;
+        Hawk.put(HawkConfig.HOME_REC, homeRec);
+    }
     
     public static boolean reHome(Context appContext) {
         Intent intent = new Intent(appContext, HomeActivity.class);
@@ -378,14 +388,6 @@ public class HomeActivity extends BaseActivity {
         intent.putExtras(bundle);
         appContext.startActivity(intent);
         return true;
-    }
-    
-    public static void homeRecf() { //站点切换
-        int homeRec = Hawk.get(HawkConfig.HOME_REC, -1);
-        int limit = 2;
-        if (homeRec == limit) homeRec = -1;
-        homeRec++;
-        Hawk.put(HawkConfig.HOME_REC, homeRec);
     }
 
     private boolean skipNextUpdate = false;	
@@ -405,6 +407,12 @@ public class HomeActivity extends BaseActivity {
                     sortAdapter.setNewData(DefaultConfig.adjustSort(ApiConfig.get().getHomeSourceBean().getKey(), new ArrayList<>(), true));
                 }
                 initViewPager(absXml);
+                // takagen99 : Switch to show / hide source title
+                SourceBean home = ApiConfig.get().getHomeSourceBean();
+                if (HomeShow) {
+                    if (home != null && home.getName() != null && !home.getName().isEmpty()) tvName.setText(home.getName());
+                        tvName.clearAnimation();
+                }
             }
         });
     }
@@ -424,14 +432,6 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void initData() {
-
-        // takagen99 : Switch to show / hide source title
-        SourceBean home = ApiConfig.get().getHomeSourceBean();
-        if (HomeShow) {
-            if (home != null && home.getName() != null && !home.getName().isEmpty())
-                tvName.setText(home.getName());
-        }
-
         // takagen99: If network available, check connected Wifi or Lan
         if (isNetworkAvailable()) {
             ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
@@ -466,6 +466,7 @@ public class HomeActivity extends BaseActivity {
             }         
             return;
         }
+        tvNameAnimation();
         showLoading();
         if (dataInitOk && !jarInitOk) {
             if (!ApiConfig.get().getSpider().isEmpty()) {
@@ -492,7 +493,7 @@ public class HomeActivity extends BaseActivity {
                     @Override
                     public void error(String msg) {
                         jarInitOk = true;
-                        mHandler.post(new Runnable() {
+                        mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 if ("".equals(msg))
@@ -501,7 +502,7 @@ public class HomeActivity extends BaseActivity {
                                     Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
                                 initData();
                             }
-                        });
+                        },50);
                     }
                 });
             }
@@ -700,6 +701,7 @@ public class HomeActivity extends BaseActivity {
         if (Hawk.get(HawkConfig.HOME_SHOW_SOURCE, false)) {
             if (home != null && home.getName() != null && !home.getName().isEmpty()) {
                 tvName.setText(home.getName());
+                tvName.clearAnimation();
             }
         } else {
             tvName.setText(R.string.app_name);
@@ -931,7 +933,18 @@ public class HomeActivity extends BaseActivity {
         showSuccess();
         sortAdapter.setNewData(DefaultConfig.adjustSort(ApiConfig.get().getHomeSourceBean().getKey(), new ArrayList<>(), true));
         initViewPager(null);
-    }	
+        tvName.clearAnimation();
+    }
+
+    private void tvNameAnimation()
+    {
+        AlphaAnimation blinkAnimation = new AlphaAnimation(0.0f, 1.0f);
+        blinkAnimation.setDuration(500);
+        blinkAnimation.setStartOffset(20);
+        blinkAnimation.setRepeatMode(Animation.REVERSE);
+        blinkAnimation.setRepeatCount(Animation.INFINITE);
+        tvName.startAnimation(blinkAnimation);
+    }
 //    public void onClick(View v) {
 //        FastClickCheckUtil.check(v);
 //        if (v.getId() == R.id.tvFind) {
