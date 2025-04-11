@@ -492,6 +492,7 @@ public class HomeActivity extends BaseActivity {
                     @Override
                     public void error(String msg) {
                         jarInitOk = true;
+                        dataInitOk = true;
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -499,7 +500,7 @@ public class HomeActivity extends BaseActivity {
                                     Toast.makeText(HomeActivity.this, getString(R.string.hm_notok), Toast.LENGTH_SHORT).show();
                                 else
                                     Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
-                                reloadHome();
+                                initData();
                             }
                         },50);
                     }
