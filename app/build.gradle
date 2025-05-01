@@ -34,7 +34,7 @@ android {
 
         }
     }
-    
+
     flavorDimensions += ["abi", "brand", "mode"]
     productFlavors {
         armeabi {
