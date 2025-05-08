@@ -1,5 +1,6 @@
 package com.github.tvbox.osc.api;
 
+import static com.github.tvbox.osc.util.RegexUtils.getPattern;
 import android.app.Activity;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -104,7 +105,7 @@ public class ApiConfig {
         String content = json;
         try {
             if (AES.isJson(content)) return content;
-            Pattern pattern = Pattern.compile("[A-Za-z0]{8}\\*\\*");
+            Pattern pattern = getPattern("[A-Za-z0]{8}\\*\\*");
             Matcher matcher = pattern.matcher(content);
             if (matcher.find()) {
                 content = content.substring(content.indexOf(matcher.group()) + 10);
@@ -128,7 +129,7 @@ public class ApiConfig {
     }
 
     private static byte[] getImgJar(String body) {
-        Pattern pattern = Pattern.compile("[A-Za-z0]{8}\\*\\*");
+        Pattern pattern = getPattern("[A-Za-z0]{8}\\*\\*");
         Matcher matcher = pattern.matcher(body);
         if (matcher.find()) {
             body = body.substring(body.indexOf(matcher.group()) + 10);
@@ -555,6 +556,7 @@ public class ApiConfig {
             VideoParseRuler.clearRule();
             for(JsonElement oneHostRule : infoJson.getAsJsonArray("rules")) {
                 JsonObject obj = (JsonObject) oneHostRule;
+                //嗅探过滤规则
                 if (obj.has("host")) {
                     String host = obj.get("host").getAsString();
                     if (obj.has("rule")) {
@@ -580,6 +582,7 @@ public class ApiConfig {
                         }
                     }
                 }
+                //广告过滤规则
                 if (obj.has("hosts") && obj.has("regex")) {
                     ArrayList<String> rule = new ArrayList<>();
                     ArrayList<String> ads = new ArrayList<>();
@@ -589,12 +592,25 @@ public class ApiConfig {
                         if (M3U8.isAd(regex)) ads.add(regex);
                         else rule.add(regex);
                     }
-
                     JsonArray array = obj.getAsJsonArray("hosts");
                     for (JsonElement one : array) {
                         String host = one.getAsString();
                         VideoParseRuler.addHostRule(host, rule);
                         VideoParseRuler.addHostRegex(host, ads);
+                    }
+                }
+                //嗅探脚本规则 如 click
+                if (obj.has("hosts") && obj.has("script")) {
+                    ArrayList<String> scripts = new ArrayList<>();
+                    JsonArray scriptArray = obj.getAsJsonArray("script");
+                    for (JsonElement one : scriptArray) {
+                        String script = one.getAsString();
+                        scripts.add(script);
+                    }
+                    JsonArray array = obj.getAsJsonArray("hosts");
+                    for (JsonElement one : array) {
+                        String host = one.getAsString();
+                        VideoParseRuler.addHostScript(host, scripts);
                     }
                 }
             }
