@@ -78,6 +78,4 @@ public class HawkConfig {
         return Hawk.get(DEBUG_OPEN, false);
     }
     public static boolean hotVodDelete;
-
-    public static final String SEARCH_RESULT_WIDTH = "search_result_width"; // 搜索结果view宽度
 }

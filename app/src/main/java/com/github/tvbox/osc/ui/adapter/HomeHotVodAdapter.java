@@ -11,9 +11,9 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.api.ApiConfig;
-import com.github.tvbox.osc.base.App;
 import com.github.tvbox.osc.bean.Movie;
 import com.github.tvbox.osc.bean.SourceBean;
+import com.github.tvbox.osc.util.DefaultConfig;
 import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.util.ImgUtil;
 import com.orhanobut.hawk.Hawk;
@@ -81,7 +81,7 @@ public class HomeHotVodAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHol
         //由于部分电视机使用glide报错
         if (!TextUtils.isEmpty(item.pic)) {
             // takagen99 : Use Glide instead
-            ImgUtil.load(item.pic, ivThumb,  (int) App.getInstance().getResources().getDimension(R.dimen.vs_5),AutoSizeUtils.mm2px(mContext, newWidth), AutoSizeUtils.mm2px(mContext, newHeight));
+            ImgUtil.load(item.pic, ivThumb, 14);
         } else {
             ivThumb.setImageResource(R.drawable.img_loading_placeholder);
         }
